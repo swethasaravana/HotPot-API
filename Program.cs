@@ -32,6 +32,8 @@ namespace HotPotAPI
             builder.Services.AddScoped<IRepository<int, Customer>, CustomerRepository>();
             builder.Services.AddScoped<IRepository<string, User>, UserRepository>();
             builder.Services.AddScoped<IRepository<int, Admin>, AdminRepository >();
+            builder.Services.AddScoped<IRepository<int, RestaurantManager>, RestaurantManagerRepository>();
+            builder.Services.AddScoped<IRepository<int, DeliveryPartner>, DeliveryPartnerRepository>();
             #endregion
 
             #region Services
@@ -39,6 +41,8 @@ namespace HotPotAPI
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<IRestaurantManagerService, RestaurantManagerService>();
+            builder.Services.AddScoped<IDeliveryPartnerService, DeliveryPartnerService>();
             #endregion
 
             var app = builder.Build();

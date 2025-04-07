@@ -10,9 +10,14 @@ namespace HotPotAPI.Models
         public byte[] Password { get; set; }
         public byte[] HashKey { get; set; }
         public string Role { get; set; }
-        public Customer? Customer { get; set; } // navigation
 
+        public Customer? Customer { get; set; } // navigation
         public Admin? Admin { get; set; }
+        public RestaurantManager? RestaurantManager { get; set; }
+        public DeliveryPartner? DeliveryPartner { get; set; }
+
+
+
 
 
     }
