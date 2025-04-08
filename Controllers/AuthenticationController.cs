@@ -29,6 +29,30 @@ namespace HotPotAPI.Controllers
                         Data = result
                     });
                 }
+                else if (result.Role == "Admin")
+                {
+                    return Ok(new
+                    {
+                        Message = "Admin login successful",
+                        Data = result
+                    });
+                }
+                else if (result.Role == "DeliveryPartner")
+                {
+                    return Ok(new
+                    {
+                        Message = "Delivery Partner login successful",
+                        Data = result
+                    });
+                }
+                else if (result.Role == "RestaurantManager")
+                {
+                    return Ok(new
+                    {
+                        Message = "Restaurant Manager login successful",
+                        Data = result
+                    });
+                }
                 else
                 {
                     return BadRequest("Invalid role.");

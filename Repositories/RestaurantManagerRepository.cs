@@ -13,7 +13,7 @@ namespace HotPotAPI.Repositories
         public override async Task<RestaurantManager> GetById(int id)
         {
             var manager = await _context.RestaurantManagers
-                .SingleOrDefaultAsync(rm => rm.Id == id);
+                .SingleOrDefaultAsync(rm => rm.ManagerId == id);
 
             if (manager == null)
                 throw new Exception($"Restaurant Manager with ID {id} not found");

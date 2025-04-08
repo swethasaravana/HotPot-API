@@ -30,5 +30,20 @@ namespace HotPotAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("restaurants")]
+        public async Task<IActionResult> GetAllRestaurants()
+        {
+            try
+            {
+                var restaurants = await _customerService.GetAllRestaurants();
+                return Ok(restaurants);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
+        }
+
     }
 }

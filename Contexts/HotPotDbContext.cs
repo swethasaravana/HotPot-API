@@ -1,5 +1,6 @@
 ﻿using HotPotAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace HotPotAPI.Contexts
 {
@@ -12,13 +13,13 @@ namespace HotPotAPI.Contexts
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Admin> Admins { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<RestaurantManager> RestaurantManagers { get; set; }
         public DbSet<DeliveryPartner> DeliveryPartners { get; set; }
 
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Customer relationship
             modelBuilder.Entity<Customer>()
             .HasOne(c => c.User)
             .WithOne(u => u.Customer)
@@ -26,6 +27,7 @@ namespace HotPotAPI.Contexts
             .HasPrincipalKey<User>(u => u.Username)
             .OnDelete(DeleteBehavior.Cascade);
 
+            // Admin relationship
             modelBuilder.Entity<Admin>()
             .HasOne(a => a.User)
             .WithOne(u => u.Admin)
@@ -33,40 +35,21 @@ namespace HotPotAPI.Contexts
             .HasPrincipalKey<User>(u => u.Username)
             .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Restaurant>()
-            .HasMany(r => r.Managers)
-            .WithOne(m => m.Restaurant)
-            .HasForeignKey(m => m.RestaurantId)
-            .OnDelete(DeleteBehavior.Cascade);
-
+            // RestaurantManager relationship
             modelBuilder.Entity<RestaurantManager>()
-            .HasOne(m => m.User)
+            .HasOne(rm => rm.User)
             .WithOne(u => u.RestaurantManager)
-            .HasForeignKey<RestaurantManager>(m => m.Email)
+            .HasForeignKey<RestaurantManager>(rm => rm.Email)
             .HasPrincipalKey<User>(u => u.Username)
             .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<DeliveryPartner>(entity =>
-            {
-                entity.HasKey(dp => dp.PartnerId); // Primary Key
-
-                entity.Property(dp => dp.FullName)
-                      .IsRequired()
-                      .HasMaxLength(100);
-
-                entity.Property(dp => dp.Email)
-                      .IsRequired()
-                      .HasMaxLength(100);
-
-                entity.Property(dp => dp.Phone)
-                      .IsRequired()
-                      .HasMaxLength(20);
-
-                entity.HasOne(dp => dp.User)
-                      .WithOne()
-                      .HasForeignKey<DeliveryPartner>(dp => dp.User)
-                      .OnDelete(DeleteBehavior.Cascade); // One-to-one with User
-            });
+            // DeliveryPartner relationship
+            modelBuilder.Entity<DeliveryPartner>()
+            .HasOne(dp => dp.User)
+            .WithOne(u => u.DeliveryPartner)
+            .HasForeignKey<DeliveryPartner>(dp => dp.Username)
+            .HasPrincipalKey<User>(u => u.Username)
+            .OnDelete(DeleteBehavior.Cascade);
 
 
         }

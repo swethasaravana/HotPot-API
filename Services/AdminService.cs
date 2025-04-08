@@ -10,11 +10,13 @@ namespace HotPotAPI.Services
     {
         private readonly IRepository<string, User> _userRepository;
         private readonly IRepository<int, Admin> _adminRepository;
+        private readonly IRepository<int, Restaurant> _restaurantRepository;
 
-        public AdminService(IRepository<string, User> userRepository, IRepository<int, Admin> adminRepository)
+        public AdminService(IRepository<string, User> userRepository, IRepository<int, Admin> adminRepository, IRepository<int, Restaurant> restaurantRepository)
         {
             _userRepository = userRepository;
             _adminRepository = adminRepository;
+            _restaurantRepository = restaurantRepository;
         }
 
         public async Task<CreateAdminResponse> CreateAdmin(CreateAdminRequest request)
@@ -56,5 +58,55 @@ namespace HotPotAPI.Services
                 Role = "Admin"
             };
         }
+        public async Task<Restaurant> AddRestaurant(CreateRestaurantDTO dto)
+        {
+            var restaurant = new Restaurant
+            {
+                RestaurantName = dto.Name,
+                Location = dto.Address,
+                ContactNumber = dto.Contact,
+                Email = dto.Email,
+                Restaurantlogo = dto.Restaurantlogo
+            };
+            return await _restaurantRepository.Add(restaurant);
+        }
+
+        public async Task<Restaurant> UpdateRestaurant(int id, CreateRestaurantDTO dto)
+        {
+            var existing = await _restaurantRepository.GetById(id);
+            if (existing == null)
+            {
+                throw new Exception("Restaurant not found");
+            }
+
+            existing.RestaurantName = dto.Name;
+            existing.Location = dto.Address;
+            existing.ContactNumber = dto.Contact;
+            existing.Email = dto.Email;
+            existing.Restaurantlogo = dto.Restaurantlogo;
+
+            return await _restaurantRepository.Update(existing.RestaurantId, existing);
+        }
+        public async Task<bool> DeleteRestaurant(int id)
+        {
+            var restaurant = await _restaurantRepository.GetById(id);
+            if (restaurant == null)
+                return false;
+
+            var deleted = await _restaurantRepository.Delete(id);
+            return deleted != null;
+        }
+
+        public async Task<List<Restaurant>> GetAllRestaurants()
+        {
+            var restaurants = await _restaurantRepository.GetAll();
+            return restaurants.ToList();
+        }
+
+        public async Task<Restaurant> GetRestaurantById(int id)
+        {
+            return await _restaurantRepository.GetById(id);
+        }
     }
 }
+

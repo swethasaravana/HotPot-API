@@ -1,6 +1,7 @@
 ﻿using HotPotAPI.Interfaces;
 using HotPotAPI.Models;
 using HotPotAPI.Models.DTOs;
+using HotPotAPI.Repositories;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -10,11 +11,14 @@ namespace HotPotAPI.Services
     {
         private readonly IRepository<string, User> _userRepository;
         private readonly IRepository<int, Customer> _customerRepository;
+        private readonly IRepository<int, Restaurant> _restaurantRepository;
 
-        public CustomerService(IRepository<string, User> userRepository, IRepository<int, Customer> customerRepository)
+
+        public CustomerService(IRepository<string, User> userRepository, IRepository<int, Customer> customerRepository, IRepository<int, Restaurant> restaurantRepository)
         {
             _userRepository = userRepository;
             _customerRepository = customerRepository;
+            _restaurantRepository = restaurantRepository;
         }
 
         public async Task<CreateCustomerResponse> AddCustomer(CreateCustomerRequest request)
@@ -58,6 +62,15 @@ namespace HotPotAPI.Services
                 Role = "Customer"
             };
         }
+
+        public async Task<List<Restaurant>> GetAllRestaurants()
+        {
+            var restaurants = await _restaurantRepository.GetAll();
+            return restaurants.ToList();
+        }
+
+
+
 
     }
 

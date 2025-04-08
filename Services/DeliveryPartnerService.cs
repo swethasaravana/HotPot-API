@@ -31,7 +31,7 @@ namespace HotPotAPI.Services
                 throw new Exception("Failed to create user");
 
             var partner = MapToDeliveryPartner(request);
-            partner.User = user;
+            partner.Username = user.Username; ;
 
             var partnerResult = await _partnerRepository.Add(partner);
             if (partnerResult == null)
