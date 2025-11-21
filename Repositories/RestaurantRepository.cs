@@ -20,5 +20,6 @@ namespace HotPotAPI.Repositories
                 throw new Exception("Restaurant not found");
             return restaurant;
         }
+
     }
 }

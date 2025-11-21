@@ -1,19 +1,35 @@
 ﻿using HotPotAPI.Interfaces;
 using HotPotAPI.Models.DTOs;
+using HotPotAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotPotAPI.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
     {
         private readonly IAdminService _adminService;
+        private readonly IOrderService _orderService;
+        private readonly ICustomerService _customerService;
+        private readonly IRestaurantManagerService _restaurantManagerService;
+        private readonly IDeliveryPartnerService _deliveryPartnerService;
 
-        public AdminController(IAdminService adminService)
+        public AdminController(IAdminService adminService, 
+                               IOrderService orderService,
+                               ICustomerService customerService,
+                               IRestaurantManagerService restaurantManagerService,
+                               IDeliveryPartnerService deliveryPartnerService)
         {
             _adminService = adminService;
+            _orderService = orderService;
+            _customerService = customerService;
+            _restaurantManagerService = restaurantManagerService;
+            _deliveryPartnerService = deliveryPartnerService;
+
         }
 
         [HttpPost("register")]
@@ -26,12 +42,13 @@ namespace HotPotAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("restaurants")]
-        public async Task<IActionResult> AddRestaurant([FromBody] CreateRestaurantDTO dto)
+        public async Task<IActionResult> AddRestaurant([FromBody] CreateRestaurant dto)
         {
             try
             {
@@ -45,8 +62,9 @@ namespace HotPotAPI.Controllers
         }
 
         // Update Restaurant
+        [Authorize(Roles = "Admin")]
         [HttpPut("restaurants/{id}")]
-        public async Task<IActionResult> UpdateRestaurant(int id, [FromBody] CreateRestaurantDTO dto)
+        public async Task<IActionResult> UpdateRestaurant(int id, [FromBody] CreateRestaurant dto)
         {
             try
             {
@@ -63,6 +81,7 @@ namespace HotPotAPI.Controllers
         }
 
         // Delete Restaurant
+        [Authorize(Roles = "Admin")]
         [HttpDelete("restaurants/{id}")]
         public async Task<IActionResult> DeleteRestaurant(int id)
         {
@@ -80,6 +99,7 @@ namespace HotPotAPI.Controllers
         }
 
         // Get All Restaurants
+        [Authorize(Roles = "Admin")]
         [HttpGet("restaurants")]
         public async Task<IActionResult> GetAllRestaurants()
         {
@@ -108,6 +128,33 @@ namespace HotPotAPI.Controllers
             catch (Exception ex)
             {
                 return BadRequest($"Error: {ex.Message}");
+            }
+        }
+
+        // API endpoint to get dashboard stats
+        [HttpGet("stats")]
+        public async Task<IActionResult> GetDashboardStats()
+        {
+            try
+            {
+                // Call services to get the total counts
+                var totalCustomers = await _customerService.GetTotalCustomers();
+                var totalRestaurants = await _adminService.GetTotalRestaurants();
+                var totalRestaurantManagers = await _restaurantManagerService.GetTotalManagers();
+                var totalDeliveryPartners = await _deliveryPartnerService.GetTotalDeliveryPartners();
+
+                var stats = new
+                {
+                    totalCustomers,
+                    totalRestaurants,
+                    totalRestaurantManagers,
+                    totalDeliveryPartners
+                };
+                return Ok(stats);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
             }
         }
 

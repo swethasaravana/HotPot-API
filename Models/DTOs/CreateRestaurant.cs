@@ -1,6 +1,6 @@
 ﻿namespace HotPotAPI.Models.DTOs
 {
-    public class CreateRestaurantDTO
+    public class CreateRestaurant
     {
         public string Name { get; set; }
         public string Address { get; set; }

@@ -73,7 +73,7 @@ namespace HotPotAPI.Services
                 if (partner == null)
                     throw new UnauthorizedAccessException("Admin not found");
                 name = partner.FullName;
-                id = partner.PartnerId;
+                id = partner.DeliveryPartnerId;
             }
             else if (user.Role == "RestaurantManager")
             {

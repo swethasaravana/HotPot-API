@@ -12,6 +12,5 @@ namespace HotPotAPI.Models
         public string Email { get; set; }
         public string Restaurantlogo { get; set; }
 
-
     }
 }

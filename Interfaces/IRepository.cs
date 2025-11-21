@@ -1,4 +1,6 @@
-﻿namespace HotPotAPI.Interfaces
+﻿using HotPotAPI.Models;
+
+namespace HotPotAPI.Interfaces
 {
     public interface IRepository<K, T> where T : class
     {

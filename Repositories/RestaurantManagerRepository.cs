@@ -8,6 +8,7 @@ namespace HotPotAPI.Repositories
     {
         public RestaurantManagerRepository(HotPotDbContext context) : base(context)
         {
+
         }
 
         public override async Task<RestaurantManager> GetById(int id)
@@ -31,6 +32,18 @@ namespace HotPotAPI.Repositories
                 throw new Exception("No restaurant managers found");
 
             return managers;
+        }
+
+        public async Task<Restaurant> GetRestaurantByManagerId(int managerId)
+        {
+            var manager = await _context.RestaurantManagers
+                .Include(rm => rm.Restaurant)
+                .FirstOrDefaultAsync(rm => rm.ManagerId == managerId);
+
+            if (manager == null || manager.Restaurant == null)
+                throw new Exception($"Restaurant for Manager ID {managerId} not found");
+
+            return manager.Restaurant;
         }
     }
 }

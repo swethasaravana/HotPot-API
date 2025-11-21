@@ -12,10 +12,7 @@ namespace HotPotAPI.Repositories
 
         public override async Task<Admin> GetById(int key)
         {
-            var admin = await _context.Admins.FindAsync(key);
-            if (admin == null)
-                throw new Exception($"Admin with ID {key} not found");
-            return admin;
+            return await _context.Admins.FindAsync(key);
         }
 
         public override async Task<IEnumerable<Admin>> GetAll()
